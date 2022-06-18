@@ -1,3 +1,4 @@
+from turtle import pos
 import rclpy
 from rclpy.node import Node
 
@@ -22,6 +23,7 @@ from std_msgs.msg import String
 
 # connection_string = args.connect
 # id = args.id
+id = 1
 # last = args.time
 
 # Start SITL if no connection string specified
@@ -72,47 +74,45 @@ class MinimalPublisher(Node):
         self.i = 0
 
     def timer_callback(self):
+        self.i += 1
+        fps = 3
+        f = open(f"rogoz/1fps-10drones/{id}.txt", "r")
+        lines = f.readlines()
+        # while(time.time_ns() < float(last) + 10e09):
+        #     pass
+        # PX4setMode(id, 6)
+        # vehicle.armed = True
+        # while not vehicle.armed:
+        #     time.sleep(1)
+        # PX4setMode(id, 6)
+        # for i in range(100):
+        #     goto_position_target_local_ned(id, 0, 0, -0.5, 0, 0, 0 ,0 , 0, 0)
+        #     time.sleep(0.01)
+        time.sleep(0.4)
+        line_counter = self.i
+        # for line in lines:
+        #     pos0 = [vehicle.location.local_frame.north, vehicle.location.local_frame.east, -vehicle.location.local_frame.down]
+        index = line_counter + 15
+        if (index + 1) < len(lines):   
+            line_elements = lines[index].split()
+        # else:
+            # continue
+        pos1 = [float(line_elements[1]), float(line_elements[2]) - 3 * (float(id) - 1), float(line_elements[3])]
+        line_elements = lines[index + 1].split()
+        pos2 = [float(line_elements[1]), float(line_elements[2]) - 3 * (float(id) - 1), float(line_elements[3])]
+        vel = ((np.array(pos2) - np.array(pos1))/(1/fps)).tolist()
+        time.sleep((1/fps))
+        last_time = time.time_ns()
+        # while(time.time_ns() - last_time < (1/fps)*1e9):
+    #         goto_position_target_local_ned(id, pos1[0], pos1[1], -pos1[2], vel[0], vel[1], -vel[2] ,0 , 0, 0)
+            # time.sleep(0.01)
         msg = String()
-        msg.data = 'pos2 %d' % self.i
+        msg.data = str(pos2)
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' % msg.data)
-        self.i += 1
 
 
-def main(args=None):
-        
-    # fps = 3
-    # f = open(f"rogoz/1fps-10drones/{id}.txt", "r")
-    # lines = f.readlines()
-    # while(time.time_ns() < float(last) + 10e09):
-    #     pass
-    # PX4setMode(id, 6)
-    # vehicle.armed = True
-    # while not vehicle.armed:
-    #     time.sleep(1)
-    # PX4setMode(id, 6)
-    # for i in range(100):
-    #     goto_position_target_local_ned(id, 0, 0, -0.5, 0, 0, 0 ,0 , 0, 0)
-    #     time.sleep(0.01)
-    # time.sleep(0.4)
-    # line_counter = 0
-    # for line in lines:
-    #     pos0 = [vehicle.location.local_frame.north, vehicle.location.local_frame.east, -vehicle.location.local_frame.down]
-    #     index = line_counter + 15
-    #     if (index + 1) < len(lines):   
-    #         line_elements = lines[index].split()
-    #     else:
-    #         continue
-    #     pos1 = [float(line_elements[1]), float(line_elements[2]) - 3 * (float(id) - 1), float(line_elements[3])]
-    #     line_elements = lines[index + 1].split()
-    #     pos2 = [float(line_elements[1]), float(line_elements[2]) - 3 * (float(id) - 1), float(line_elements[3])]
-    #     vel = ((np.array(pos2) - np.array(pos1))/(1/fps)).tolist()
-    #     # time.sleep((1/fps))
-    #     last_time = time.time_ns()
-    #     while(time.time_ns() - last_time < (1/fps)*1e9):
-    #         goto_position_target_local_ned(id, pos1[0], pos1[1], -pos1[2], vel[0], vel[1], -vel[2] ,0 , 0, 0)
-    #         time.sleep(0.01)
-    #     line_counter = line_counter + 1
+def main(args=None):        
     rclpy.init(args=args)
 
     minimal_publisher = MinimalPublisher()
