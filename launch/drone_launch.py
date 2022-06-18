@@ -14,5 +14,12 @@ def generate_launch_description():
             namespace='visualization_msgs2',
             executable='show',
             name='msg'
+        ),
+        Node(
+            package='rviz2',
+            namespace='',
+            executable='rviz2',
+            name='rviz2',
+            # arguments=['-d', [os.path.join(pkg_dir, 'config', 'config_file.rviz')]]
         )
     ])
