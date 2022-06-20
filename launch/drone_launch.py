@@ -14,12 +14,12 @@ def generate_launch_description():
             name='msg',
             arguments=['--connect','127.0.0.1:14540' ,'--id','1','--time','$value']
         ),
-        # Node(
-        #     package='drone_sim',
-        #     namespace='visualization_msgs2',
-        #     executable='show',
-        #     name='msg'
-        # ),
+        Node(
+            package='drone_sim',
+            namespace='geometry_msgs2',
+            executable='show',
+            name='msg'
+        ),
         # Node(
         #     package='drone_sim',
         #     namespace='visualization_msgs3',
