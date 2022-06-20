@@ -9,7 +9,7 @@ def generate_launch_description():
     return LaunchDescription([    
         Node(
             package='drone_sim',
-            namespace='visualization_msgs1',
+            namespace='geometry_msgs',
             executable='show',
             name='msg',
             arguments=['--connect','127.0.0.1:14540' ,'--id','1','--time','$value']

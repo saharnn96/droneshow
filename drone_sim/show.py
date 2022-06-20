@@ -1,6 +1,8 @@
 from turtle import pos
 import rclpy
 from rclpy.node import Node
+# import rospy
+from geometry_msgs.msg import PoseStamped
 
 from operator import index
 from dronekit import connect, VehicleMode, LocationGlobal, LocationGlobalRelative
@@ -68,7 +70,7 @@ class MinimalPublisher(Node):
 
     def __init__(self):
         super().__init__('publisher')
-        self.publisher_ = self.create_publisher(String, 'Marker', 10)
+        self.publisher_ = self.create_publisher(PoseStamped, 'Pose', 10)
         timer_period = 3  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
@@ -106,9 +108,21 @@ class MinimalPublisher(Node):
         # while(time.time_ns() - last_time < (1/fps)*1e9):
     #         goto_position_target_local_ned(id, pos1[0], pos1[1], -pos1[2], vel[0], vel[1], -vel[2] ,0 , 0, 0)
             # time.sleep(0.01)
+
+        goal = PoseStamped()
+        goal.header.frame_id = "map"
+
+        goal.pose.position.x = float(pos2[0])
+        goal.pose.position.y = float(pos2[1])
+        goal.pose.position.z = float(pos2[2])
+
+        goal.pose.orientation.x = 0.0
+        goal.pose.orientation.y = 0.0
+        goal.pose.orientation.z = 0.0
+        goal.pose.orientation.w = 1.0
         msg = String()
         msg.data = str(pos2)
-        self.publisher_.publish(msg)
+        self.publisher_.publish(goal)
         self.get_logger().info('Publishing: "%s"' % msg.data)
 
 
